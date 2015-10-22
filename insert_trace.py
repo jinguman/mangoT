@@ -54,6 +54,7 @@ class InsertTrace(threading.Thread):
             location = get_data['location']
             channel = get_data['channel']
 
+
             # make collection name
             collection_name = network + "_" + station
 
@@ -74,8 +75,7 @@ class InsertTrace(threading.Thread):
 
             try:
                 self._col.update(key, {'$set':{channel:data}}, upsert=True,multi=False)
-
-                if print_cnt > 1000:
+                if print_cnt > 10:
                     logger.info("<< Insert Queue.. %s_%s_%s | %s | %d", get_data['network'], get_data['station'], get_data['channel'], get_data['st'], self._queue.qsize())
                     print_cnt = 0
                 print_cnt += 1

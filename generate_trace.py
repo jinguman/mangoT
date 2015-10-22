@@ -45,19 +45,20 @@ class GenerateTrace(threading.Thread):
                 station = _lst[1]
                 nsamp = _lst[2]
 
-                data = {}
-                data['st'] = self._time
-                data['n'] = nsamp * self.plus_time
-                data['c'] = 1
-                data['s'] = nsamp
-                data['d'] = self.get_random_list(data['n'])
-                data['et'] = self._time + plusSecond
-
-                data['network'] = network
-                data['station'] = station
-                data['location'] = ''
 
                 for channel in self.CHANNELS:
+                    data = {}
+                    data['st'] = self._time
+                    data['n'] = nsamp * self.plus_time
+                    data['c'] = 1
+                    data['s'] = nsamp
+                    data['d'] = self.get_random_list(data['n'])
+                    data['et'] = self._time + plusSecond
+
+                    data['network'] = network
+                    data['station'] = station
+                    data['location'] = ''
+
                     data['channel'] = channel
                     #print data
                     self._queue.put(data)

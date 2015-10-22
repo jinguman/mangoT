@@ -56,7 +56,7 @@ def main():
     #gt.set_buffer("test1",100)
 
     #station number
-    num_station = 20
+    num_station = 1
     nsamp = 100
 
     network = "KA"
@@ -65,6 +65,7 @@ def main():
         gt.set_buffer(network,station, nsamp)
     gt.start()
 
+    '''
     network = "KB"
     for i in range(num_station):
         station = "BBB" + str(i)
@@ -195,20 +196,20 @@ def main():
     for i in range(num_station):
         station = "WWW" + str(i)
         gt23.set_buffer(network,station, nsamp)
-    gt23.start()
+    #gt23.start()
 
     network = "KX"
     for i in range(num_station):
         station = "XXX" + str(i)
         gt24.set_buffer(network,station, nsamp)
-    gt24.start()
+    #gt24.start()
 
     network = "KY"
     for i in range(num_station):
         station = "YYY" + str(i)
         gt25.set_buffer(network,station, nsamp)
-    gt25.start()
-
+    #gt25.start()
+    '''
 
 
 
