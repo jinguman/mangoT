@@ -62,7 +62,7 @@ class GenerateTrace(threading.Thread):
                     #print data
                     self._queue.put(data)
 
-                logger.info(">> Put Queue.. %s_%s | %s | %d", data['network'], data['station'], data['st'], self._queue.qsize())
+                #logger.info(">> Put Queue.. %s_%s | %s | %d", data['network'], data['station'], data['st'], self._queue.qsize())
 
             self._time = self._time + plusSecond
         pass

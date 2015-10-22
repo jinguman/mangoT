@@ -74,7 +74,12 @@ class InsertTrace(threading.Thread):
 
             try:
                 self._col.update(key, {'$set':{channel:data}}, upsert=True,multi=False)
-                logger.info("<< Insert Queue.. %s_%s_%s | %s | %d", get_data['network'], get_data['station'], get_data['channel'], get_data['st'], self._queue.qsize())
+
+                if print_cnt > 1000:
+                    logger.info("<< Insert Queue.. %s_%s_%s | %s | %d", get_data['network'], get_data['station'], get_data['channel'], get_data['st'], self._queue.qsize())
+                    print_cnt = 0
+                print_cnt += 1
+
 
             except AutoReconnect as exception:
                 logger.warn(exception.args)
