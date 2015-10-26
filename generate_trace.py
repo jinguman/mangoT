@@ -15,16 +15,18 @@ class GenerateTrace(threading.Thread):
 
     def __init__(self, queue):
 
+
         self._buffer = []
         self._queue = queue
         #self._time = datetime.now()
-        self._time = datetime(2015,1,1,1,1,1)
+        self._time = datetime(2015,1,1,0,0,0)
+        self._endtime = datetime(2015,1,1,23,59,59)
 
         self.plus_time = 2 # second
-        self.queue_threshold_count = 10000
+        self.queue_threshold_count = 10000000000000000000
 
         threading.Thread.__init__(self)
-        self.CHANNELS = ['BHZ', 'BHE', 'BHN', 'EHZ', 'EHE', 'EHN', 'HHZ', 'HHE', 'HHN']
+        self.CHANNELS = ['BHZ', 'BHE', 'BHN', 'EHZ', 'EHE', 'EHN', 'HHZ', 'HHE', 'HHN','SHN','SHE','SHZ','UHN','UHE','UHZ'] # 15
 
         pass
 
@@ -66,6 +68,11 @@ class GenerateTrace(threading.Thread):
                 #logger.info(">> Put Queue.. %s_%s | %s | %d", data['network'], data['station'], data['st'], self._queue.qsize())
 
             self._time = self._time + plusSecond
+            self._curtime = self._time
+
+            if ( self._time > self._endtime ):
+                break
+
         pass
 
     def set_buffer(self, network, station, nsamp):

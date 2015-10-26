@@ -5,12 +5,12 @@ import logging
 import pymongo
 from pymongo.errors import AutoReconnect
 from pymongo.errors import DuplicateKeyError
-import json
+
 
 
 # default logger
 logger = logger = logging.getLogger('mangoT.InsertTrace')
-
+INS_PACKET_LOG_PRINT_COUNT_THRESHOLD = 10
 
 class InsertTrace(threading.Thread):
 
@@ -36,11 +36,11 @@ class InsertTrace(threading.Thread):
         self._print_cnt = 0
 
         while(True):
-           self.put_station_collection_unlimited()
+           self.insert_document_per_second_and_station_collection_unlimited()
 
         pass
 
-    def put_station_collection_unlimited(self):
+    def insert_document_per_second_and_station_collection_unlimited(self):
 
         print_cnt = 0
 
@@ -53,6 +53,7 @@ class InsertTrace(threading.Thread):
             station = get_data['station']
             location = get_data['location']
             channel = get_data['channel']
+            start_time = get_data['st']
 
 
             # make collection name
@@ -68,14 +69,17 @@ class InsertTrace(threading.Thread):
             data['d'] = get_data['d']
 
             # insert mongoDB
-            self._col = self._db[collection_name]
+            coll = self._db[collection_name]
 
+            #make key
+            str_yyyy_mm_dd_hh_mm_ss = '{0:04d}'.format(start_time.year) + "-" + '{0:02d}'.format(start_time.month) + "-" + '{0:02d}'.format(start_time.day) + "T" + '{0:02d}'.format(start_time.hour) + ':' + '{0:02d}'.format(start_time.minute) + ':' + '{0:02d}'.format(start_time.second)
             key = {}
-            key['_id'] = data['st']
+            key['_id'] = str_yyyy_mm_dd_hh_mm_ss
 
             try:
-                self._col.update(key, {'$set':{channel:data}}, upsert=True,multi=False)
-                if print_cnt > 10:
+                coll.update(key, {'$set':{channel:data}}, upsert=True,multi=False)
+
+                if print_cnt > INS_PACKET_LOG_PRINT_COUNT_THRESHOLD:
                     logger.info("<< Insert Queue.. %s_%s_%s | %s | %d", get_data['network'], get_data['station'], get_data['channel'], get_data['st'], self._queue.qsize())
                     print_cnt = 0
                 print_cnt += 1
@@ -86,7 +90,7 @@ class InsertTrace(threading.Thread):
                 pass
 
             except DuplicateKeyError as exception:
-                self._col.update(key, {'$set':{channel:data}}, upsert=False,multi=False)
+                coll.update(key, {'$set':{channel:data}}, upsert=False,multi=False)
                 logger.info("<<<< INERT Queue.. %s_%s_%s | %s | %d", get_data['network'], get_data['station'], get_data['channel'], get_data['st'], self._queue.qsize())
             pass
 
